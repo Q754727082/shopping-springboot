@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shopping.dao.SpecificationDao">
+    <resultMap id="baseResultMap" type="com.example.shopping.model.Specification">
+        <id property="id" column="id" javaType="Long"/>
+        <result property="specName" column="spec_name" javaType="String"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="baseResultMap" >
+        select * from tb_specification
+    </select>
+    <insert id="insertOne" parameterType="com.example.shopping.model.Specification">
+        <selectKey resultType="Long" order="AFTER" keyProperty="id">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        insert into tb_specification(spec_name) values (#{specName})
+    </insert>
+    <delete id="deleteOneById" parameterType="Long">
+        delete from tb_specification where id=#{id}
+    </delete>
+    <!--多表查询-->
+    <resultMap id="resultMapOptions" type="com.example.shopping.model.Specification">
+        <id property="id" column="id" javaType="Long"/>
+        <result property="specName" column="spec_name" javaType="String"/>
+        <collection property="options" ofType="com.example.shopping.model.SpecificationOption">
+            <id property="id" column="oid" javaType="Long"/>
+            <result property="optionName" column="option_name" javaType="String"/>
+            <result property="order" column="orders" javaType="Integer"/>
+        </collection>
+    </resultMap>
+    <select id="selectOne1" parameterType="Long" resultMap="resultMapOptions">
+        <!--别名-->
+        select spec.id id, spec.spec_name spec_name, options.id oid, options.option_name option_name, options.orders orders
+        from tb_specification spec, tb_specification_option options where spec.id=options.spec_id and spec.id=#{id}
+    </select>
+    <!--分步查询-->
+    <resultMap id="baseResultMap2" type="com.example.shopping.model.Specification">
+        <id property="id" column="id" javaType="Long"/>
+        <result property="specName" column="spec_name" javaType="String"/>
+        <collection property="options" javaType="list" ofType="com.example.shopping.model.SpecificationOption" select="com.gzst.shopping.dao.SpecificationOptionDao.selectOptionsBySpecId" column="id"/>
+    </resultMap>
+    <select id="selectOne" parameterType="Long" resultMap="baseResultMap2">
+        select * from tb_specification where id=#{id}
+    </select>
+    <update id="updateOne" parameterType="com.example.shopping.model.Specification">
+        update tb_specification set spec_name=#{specName} where id=#{id}
+    </update>
+</mapper>

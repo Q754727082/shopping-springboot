@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shopping.dao.SpecificationOptionDao">
+    <resultMap id="baseResultMap" type="com.example.shopping.model.SpecificationOption">
+        <id property="id" column="id" javaType="Long"/>
+        <result property="optionName" column="option_name" javaType="String"/>
+        <result property="order" column="orders" javaType="Integer"/>
+        <!--多对一的关系:
+            两种做法：第一：采用别名
+                    第二：分次查找
+
+        <association property="specification" column="spec_id" select="com.example.shopping.dao.SpecificationDao.findOne">
+        </association>
+        -->
+    </resultMap>
+    <insert id="insertOne" parameterType="com.example.shopping.model.SpecificationOption">
+        insert into specification_option(option_name,spec_id,orders) values (#{optionName},#{specification.id},#{order})
+    </insert>
+    <delete id="deleteBySpecId" parameterType="Long">
+        delete from specification_option where spec_id=#{id}
+    </delete>
+    <select id="selectOptionsBySpecId" resultMap="baseResultMap" parameterType="Long">
+        select * from specification_option where spec_id=#{specId}
+    </select>
+</mapper>

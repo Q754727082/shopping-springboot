@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shopping.dao.BrandDao">
+    <resultMap id="baseResultMap" type="com.example.shopping.model.Brand">
+        <id property="id" column="id" javaType="Long" />
+        <result property="name" column="name" javaType="String" />
+        <result property="firstChar" column="first_char" javaType="String" />
+    </resultMap>
+    <select id="findAll" resultMap="baseResultMap" >
+        select * from tb_brand
+    </select>
+    <insert id="insertOne" parameterType="com.example.shopping.model.Brand">
+        insert into tb_brand(name, first_char) values (#{name},#{firstChar})
+    </insert>
+    <select id="selectOne" parameterType="Integer" resultMap="baseResultMap">
+        select * from tb_brand where id=#{id}
+    </select>
+    <!-- 用别名
+    <select id="selectOne" parameterType="Integer" resultMap="com.example.shopping.model.Brand">
+        select id id, name name, first_char firstChar from brand where id=#{id}
+    </select>
+    -->
+    <update id="updateOne" parameterType="com.example.shopping.model.Brand">
+        update tb_brand set name=#{name}, first_char=#{firstChar} where id=#{id}
+    </update>
+    <delete id="deleteOne" parameterType="Integer">
+        delete from tb_brand where id=#{id}
+    </delete>
+</mapper>
